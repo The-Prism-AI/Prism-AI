@@ -1,5 +1,6 @@
 import prism_ai as pai
-pai.api_url = "http://localhost:8000/"
+# pai.api_url = "http://localhost:8000/"
+pai.api_url = "https://api-test.prism-ai.ch/"
 
 def test_response_stream_bare(): 
 

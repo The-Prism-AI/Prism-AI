@@ -141,7 +141,7 @@ A "Knowledge" object is a bunch of text which you can let your AI model referenc
   Similarly, you can crawl a url recursively to extract and crawl all links, sublinks, and sub-sublinks etc... found on a webpage, up to the maximum recursion level (automatically capped at 100)
 
     ```py
-      knowledge = pai.Knowledge.create(
+    knowledge = pai.Knowledge.create(
         method = "url",
         name = "prism knowledge",
         kb_id = 1,
