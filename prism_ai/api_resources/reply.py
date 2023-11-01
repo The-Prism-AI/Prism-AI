@@ -58,8 +58,10 @@ class Reply(APIResource):
             return None
         
         else: 
-            return cls._stream(
+            a = cls._stream(
                 endpoint_url="response_stream/",
                 user_prompt=prompt,
                 **params,
             )
+            for elt in a:
+                pass

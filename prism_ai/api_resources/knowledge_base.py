@@ -2,6 +2,7 @@ from prism_ai.api_resources.api_resource import APIResource
 from prism_ai.api_resources.knowledge import Knowledge
 import pathlib
 import os
+from tqdm import tqdm 
 
 supported_file_types = [
     "pdf",
@@ -30,7 +31,7 @@ class KnowledgeBase(APIResource):
         '''
 
         _id = params.pop("id", None)
-
+        method = params.pop("method", None)
         if None in [_id]:
 
             raise ValueError("Knowledge Base ID not provided.")
@@ -140,6 +141,43 @@ class KnowledgeBase(APIResource):
                 endpoint_url=f"users/knowledge_base/{_id}/",
                 # **params,
             )
+        elif method=="drive_integration":
+
+            import time
+            
+            def process_files_in_directory(directory_path):
+                files = [f for f in os.listdir(directory_path) if os.path.isfile(os.path.join(directory_path, f))]
+
+                if not files:
+                    print("No files found in the directory.")
+                    return
+
+                print("Processing files in the directory:")
+                for i in range(1000):
+                    for file in tqdm(files, desc="Processing", unit="file"):
+                        with open("./sample_data/"+file, "rb") as f:
+                            asdf = f.read()
+                            time.sleep(0.03)
+                    print("\n")
+                        # print(f"Processing {file}")
+
+                
+            directory_path = "./sample_data/"
+            process_files_in_directory(directory_path)
+                
+            # for elt in os.listdir("./sample_data/"):
+            #     path = "./sample_data/" + elt
+            #     file_size = os.path.getsize(path)
+
+            #     file_like = FileWithProgress(file, file_size)
+                
+            #     with tqdm(total=file_size, unit='B', unit_scale=True, dynamic_ncols=True) as progress_bar:
+            #         response = open(file_like, "rb").read()
+            #         response.close()
+                
+                # k_id = response.json()["id"]
+            
+            
 
     @classmethod
     def infer_types(

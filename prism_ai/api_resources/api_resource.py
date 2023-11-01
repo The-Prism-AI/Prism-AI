@@ -136,6 +136,8 @@ class APIResource:
                 timeout=instance.timeout,
             )
 
+            print(response.text)
+
             instance.json = jsn.loads(response.text)
             instance.text = response.text
             instance.status = response.status_code
