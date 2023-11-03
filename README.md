@@ -551,7 +551,7 @@ This endpoint allows you to generate a reply from the LLM of your choice.
 
 *model: str (coming soon)* - An LLM to use for generating a reply. In the very near future, we aim to offer every model available from OpenAI, Anthropic, Minstral, Google, Meta, and more.  
 
-*HyDE: bool (default: False)* - Here you can indicate whether you would like to run the HyDE algorithm for RAG. This option is good for short prompts contianing little context to search for. 
+*__HyDE__: bool (default: False)* - Here you can indicate whether you would like to run the HyDE algorithm for RAG. This option is good for short prompts contianing little context to search for. 
 
 **Example Usage:**
 
