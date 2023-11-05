@@ -40,10 +40,8 @@ class Knowledge(APIResource):
 
         method = params.pop("method", None)
         name = params.pop("name", None)
-        kb_id = params.pop("knowledge_base_id", None)
-        text = params.pop("text", None)
-        url = params.pop("url", None)
-        path = params.pop("path", None)
+        kb_id = params.pop("kb_id", None)
+        source = params.pop("source", None)
 
         class FileWithProgress:
             def __init__(self, file, total_size, chunk_size=1024*1024):
@@ -63,122 +61,91 @@ class Knowledge(APIResource):
                 progress_bar.update(len(data))
                 return data
 
-
-        if method == "text":
-            if None in [name, kb_id, text]:
+        if None in [name, kb_id, source]:
                 
-                cls._no_params_message(
-                    
-                    endpoint="Knowledge",
-                    req_pars=[
-                        "name",
-                        "knowledge_base_id",
-                        "text",
-                    ],
-                )
-                return None
-            
-            else: 
-                return cls._post(
-                    endpoint_url=f"users/knowledge_base/{kb_id}/knowledge_from_text/",
-                    name=name,
-                    text=text,
-                    **params,
-                )
+            cls._no_params_message(
+                
+                endpoint="Knowledge",
+                req_pars=[
+                    "name",
+                    "kb_id",
+                    "source",
+                ],
+            )
+            return None
+        
+        if method == "text":
+            return cls._post(
+                endpoint_url=f"users/knowledge_base/{kb_id}/knowledge_from_text/",
+                name=name,
+                text=source,
+                **params,
+            )
 
         elif method == "url":
-            if None in [name, kb_id, url]:
-                
-                cls._no_params_message(
+            return cls._post(
+                endpoint_url=f"users/knowledge_base/{kb_id}/knowledge_from_url/",
+                name=name,
+                url=source,
+                **params,
+            )
+            
+        elif method == "file":
+
+            try:
+                dir_path = pathlib.Path(source)
+            except: 
+                raise ValueError("The path you provided is not valid.")
+
+            if dir_path.is_dir(): # We're dealing with a directory.
+
+                print("You've provided a directory, to the Knowledge.create method.\n\nPlease use the KnowledgeBase.create method to create a KnowledgeBase from a directory, to create multiple knowledge objects from a directory.")
+
+            else: # We're dealing with a file. 
+
+                instance = cls(endpoint_url="upload/")
+                file_size = os.path.getsize(source)
+
+                info_instance = instance._get(endpoint_url="basic_user_info/", quiet=True)
+                user_info = info_instance.json
+
+                if user_info["max_storage"] != None:
+                    if file_size / (1024 * 1024) > user_info["max_storage"]:
+                        raise ValueError("You have exceeded your storage limit. Please upgrade your plan to continue using prism.")
+                else: 
+                    pass
+                if user_info["tokens_remaining"] <= 0:
+                    raise ValueError("You have no tokens remaining. Please upgrade your plan to continue using prism.")
+                if file_size > 4 * 1024 * 1024 * 1024:
+                    raise ValueError("The file you provided is too large. The maximum file size is 4GB.")
+                if str(source).split(".")[-1] not in supported_file_types:
+                    raise ValueError("The file you provided is not supported. \nSupported file types are: \n\n - pdf \n - doc \n - docx \n - txt \n - md \n - odt")
+
+                with open(source, 'rb') as file:
                     
-                    endpoint="Knowledge",
-                    req_pars=[
-                        "name",
-                        "knowledge_base_id",
-                        "url",
-                    ],
-                )
-                return None
-            
-            else: 
-                return cls._post(
-                    endpoint_url=f"users/knowledge_base/{kb_id}/knowledge_from_url/",
-                    name=name,
-                    url=url,
-                    **params,
-                )
-            
-        elif method == "filesystem":
+                    unique_name = "kb_"+str(kb_id)+"/"+name
+                    print("Uploading file "+str(source)+" as "+str(name)+" ...")
 
-            if None in [name, kb_id, path]:
+                    file_like = FileWithProgress(file, file_size)
 
-                cls._no_params_message(
+                    headers = instance.create_headers(kb_id=kb_id, unique_name=unique_name)
+                    url = instance.api_url + "upload/"
 
-                    endpoint="Knowledge",
-                    req_pars=[
-                        "name",
-                        "knowledge_base_id",
-                        "path",
-                    ],
-                )
-                return None
-            
-            else:
-                try:
-                    dir_path = pathlib.Path(path)
-                except: 
-                    raise ValueError("The path you provided is not valid.")
-
-                if dir_path.is_dir(): # We're dealing with a directory.
-
-                    print("You've provided a directory, to the Knowledge.create method.\n\nPlease use the KnowledgeBase.create method to create a KnowledgeBase from a directory, to create multiple knowledge objects from a directory.")
+                    with requests.Session() as session: 
+                        with tqdm(total=file_size, unit='B', unit_scale=True, dynamic_ncols=True) as progress_bar:
+                            response = session.post(url, data=file_like, headers=headers)
+                        # k_id = response.json()["id"]
                     
+                    return response
+                    # return cls._get(
+                    #     endpoint_url=f"knowledge/{k_id}/",
+                    # )
+                    # return cls._post(
+                    #     endpoint_url=f"users/knowledge_base/{kb_id}/knowledge_from_file/",
+                    #     name=name,
+                    #     s3_bucket=unique_name,
+                    #     **params
+                    # )
 
-                else: # We're dealing with a file. 
-
-                    instance = cls(endpoint_url="upload/")
-                    file_size = os.path.getsize(path)
-
-                    info_instance = instance._get(endpoint_url="basic_user_info/", quiet=True)
-                    user_info = info_instance.json
-
-                    if user_info["max_storage"] != None:
-                        if file_size / (1024 * 1024) > user_info["max_storage"]:
-                            raise ValueError("You have exceeded your storage limit. Please upgrade your plan to continue using prism.")
-                    else: 
-                        pass
-                    if user_info["tokens_remaining"] <= 0:
-                        raise ValueError("You have no tokens remaining. Please upgrade your plan to continue using prism.")
-                    if file_size > 4 * 1024 * 1024 * 1024:
-                        raise ValueError("The file you provided is too large. The maximum file size is 4GB.")
-                    if str(path).split(".")[-1] not in supported_file_types:
-                        raise ValueError("The file you provided is not supported. \nSupported file types are: \n\n - pdf \n - doc \n - docx \n - txt \n - md \n - odt")
-
-                    with open(path, 'rb') as file:
-                        
-                        unique_name = "kb_"+str(kb_id)+"/"+name
-                        print("Uploading file "+str(path)+" as "+str(name)+" ...")
-
-                        file_like = FileWithProgress(file, file_size)
-
-                        headers = instance.create_headers(kb_id=kb_id, unique_name=unique_name)
-                        url = instance.api_url + "upload/"
-
-                        with requests.Session() as session: 
-                            with tqdm(total=file_size, unit='B', unit_scale=True, dynamic_ncols=True) as progress_bar:
-                                response = session.post(url, data=file_like, headers=headers)
-                            # k_id = response.json()["id"]
-                        
-                        return response
-                        # return cls._get(
-                        #     endpoint_url=f"knowledge/{k_id}/",
-                        # )
-                        # return cls._post(
-                        #     endpoint_url=f"users/knowledge_base/{kb_id}/knowledge_from_file/",
-                        #     name=name,
-                        #     s3_bucket=unique_name,
-                        #     **params
-                        # )
-
-                    return {}
+                return {}
 

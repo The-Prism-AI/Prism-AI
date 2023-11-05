@@ -50,6 +50,47 @@ class APIResource:
     def __repr__(self):
         return jsn.dumps(self.json, indent=4, sort_keys=True)
 
+    @classmethod 
+    def _delete(
+        cls,
+        endpoint_url: Optional[str],
+        **params,
+    ):
+            
+            '''
+            Delete API Resource
+            '''
+    
+            if rs.api_key == None: 
+    
+                print("Welcome to Prism! To get started, you\'ll need an API Key. \n\n You can get one for free at https://www.prism-ai.ch/\n\nOnce you've got your API key, you can either:\n\n- Set it as an environment variable called RS_API_KEY\n- Set it as a variable in your python script called rs.api_key\n\nFor example:\n\nimport renaissance as rs\nrs.api_key = \"YOUR_API_KEY\"\n\nIf you need any help, please refer to our documentation at https://www.prism-ai.ch/docs/ \n\nHappy coding!")
+    
+                return
+    
+            instance = cls(endpoint_url=endpoint_url)
+            json, data, params = instance._prepare_params(**params)
+    
+            if instance.endpoint_url is None:
+                raise ValueError("Endpoint URL is required.")
+            else:
+                response = requests.delete(
+                    instance.api_url + instance.endpoint_url,
+                    headers=instance.create_headers(),
+                    params=params,
+                    data=data,
+                    json=json,
+                    timeout=instance.timeout,
+                )
+    
+                instance.json = response.json()
+                instance.text = response.text
+                instance.status = response.status_code
+    
+                for key, value in instance.json.items():
+                    setattr(instance, key, value)
+            
+            return instance
+
     @classmethod
     def _get(
         cls,
@@ -88,7 +129,7 @@ class APIResource:
                         timeout=instance.timeout,
                     )
 
-                    instance.json = response.json()
+                    instance.json = jsn.loads(response.text)
                     instance.text = response.text
                     instance.status = response.status_code
 
@@ -124,6 +165,9 @@ class APIResource:
         instance = cls(endpoint_url=endpoint_url)
         json, data, params = instance._prepare_params(**params)
 
+        print(data)
+        print(json)
+
         if instance.endpoint_url is None:
             raise ValueError("Endpoint URL is required.")
         else:
@@ -135,11 +179,11 @@ class APIResource:
                 json=json,
                 timeout=instance.timeout,
             )
-
+            # print(response.text)
             instance.json = jsn.loads(response.text)
             instance.text = response.text
             instance.status = response.status_code
-
+            # print(instance.json)
             for key, value in instance.json.items():
                 setattr(instance, key, value)
         
@@ -222,17 +266,25 @@ class APIResource:
             "name": params.pop("name", None),
             "s3_bucket": params.pop("s3_bucket", None),
             "user_prompt": params.pop("user_prompt", None),
-            "knowledge_base": "+".join([str(elt) for elt in params.pop("knowledge_base", "")]),
-            "url": params.pop("url", None),
+            "knowledge_base": "+".join([str(elt) for elt in params.pop("kb_ids", "")]),
+            "url": params.pop("base_url", None),
             "text": params.pop("text", None),
             "recursion": params.pop("recursion", False),
             "max_recursion": params.pop("max_recursion", 1),
             "only_base_url": params.pop("only_base_url", True),
+            "kb_meta_context": params.pop("kb_meta_context", None),
+            "generate_meta_context": params.pop("generate_meta_context", True),
+            "smart_index": params.pop("smart_index", False),
+            "ner": params.pop("ner", False),
+            "verbose": params.pop("verbose", False),
+            "model": params.pop("model", "gpt-3.5-turbo-16k"),
+            "hyde": params.pop("hyde", False),
             # "prompt": params.pop("prompt", None),
         }
 
         params = {
-            
+            "kb_id": params.pop("kb_id", None),
+            "knowledge_id": params.pop("knowledge", None),
         }
 
         return json, data, params

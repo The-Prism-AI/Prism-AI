@@ -29,63 +29,35 @@ class KnowledgeBase(APIResource):
         Add knowledge to an existing knowledge base
         '''
 
-        _id = params.pop("id", None)
+        kb_id = params.pop("kb_id", None)
+        base_dir = params.pop("base_dir", None)
+        base_url = params.pop("base_url", None)
 
-        if None in [_id]:
+        if not ((base_dir is None) ^ (base_url is None)):
+            raise ValueError("Please provide either a base directory or a base url, but not both.")
 
+        if None in [kb_id]:
             raise ValueError("Knowledge Base ID not provided.")
 
-        if "knowledges" in params:
-            
-            MULTI = True
-
-            knowledges = params.pop("knowledges")
-
-            if "types" in params: 
-                types = params.pop("types")
+        if not base_url is None: 
+            if "name" in params:
+                return cls._post(
+                    endpoint_url=f"users/knowledge_base/{kb_id}/knowledge_from_url/",
+                    base_url=base_url,
+                    **params,
+                )
             else:
-                types = cls.infer_types(knowledges)
-
-            if "names" in params: 
-                names = params.pop("names")
-
-            else: 
-                names = ["Knowledge " + str(i) for i in range(len(knowledges))]
-
-            for tp, k, nm in zip(types, knowledges, names):
-
-                if tp == "url":
-                    Knowledge.create(
-                        method="url",
-                        name=nm,
-                        url=k,
-                        knowledge_base_id=_id,
-                    )
-                elif tp == "text":
-                    Knowledge.create(
-                        method="text",
-                        name=nm,
-                        text=k,
-                        knowledge_base_id=_id,
-                    )
-                elif tp == "file":
-                    Knowledge.create(
-                        method="path",
-                        name=nm,
-                        file=k,
-                        knowledge_base_id=_id,
-                    )
-                else:
-                    raise ValueError(f"Type {tp} not recognized.")
-
-            return cls._get(
-                endpoint_url=f"users/knowledge_base/{_id}/",
-                # **params,
-            )
+                return cls._post(
+                    endpoint_url=f"users/knowledge_base/{kb_id}/knowledge_from_url/",
+                    # kb_id=kb_id,
+                    name = "Knowledge pulled from " + base_url,
+                    base_url=base_url,
+                    **params,
+                )
         
-        elif "base_dir" in params:
+        elif not base_dir is None:
 
-            dir_path = pathlib.Path(params.pop("base_dir"))
+            dir_path = pathlib.Path(base_dir)
             dir_list = list(dir_path.rglob('*'))
             file_list = []
             supported_file_list = []
@@ -129,34 +101,53 @@ class KnowledgeBase(APIResource):
             
             for fl in to_process:
                 file = pathlib.Path(fl)
+                params.pop("name", None)
                 Knowledge.create(
-                    method="filesystem",
+                    method="file",
                     name=file.name,
-                    path=file,
-                    knowledge_base_id=_id,
+                    source=file,
+                    kb_id=kb_id,
+                    **params,
                 )
             
             return cls._get(
-                endpoint_url=f"users/knowledge_base/{_id}/",
+                endpoint_url=f"users/knowledge_base/{kb_id}/",
                 # **params,
             )
-
+        else:
+            raise ValueError("Please provide either a base directory or a base url, but not both.")
+        
     @classmethod
-    def infer_types(
+    def get(
         cls,
-        knowledges,
+        **params,
     ):
+            
         '''
-        Infer the types of the knowledges
+        Get a Knowledge Base Object 
         '''
 
-        types = []
+        kb_id = params.pop("kb_id", None)
 
-        for knowledge in knowledges:
+        if None in [kb_id]:
+                
+            cls._no_params_message(
+                
+                endpoint="KnowledgeBase",
+                req_pars=[
+                    "kb_id",
+                ],
+            )
+            return None
+        
+        else:
 
-            types.append("url")
-
-        return types
+            verbosity = params.pop("verbose", False)
+                
+            return cls._get(
+                endpoint_url=f"users/knowledge_base/{kb_id}/",
+                verbose = verbosity,
+            )
 
     @classmethod
     def create(
@@ -188,8 +179,39 @@ class KnowledgeBase(APIResource):
                 name=name,
                 **params,
             )
+            
+            if "base_dir" in params or "base_url" in params:
 
-            instance.add(id=instance.json['id'], **params)
+                instance.add(kb_id=instance.json['id'], name=name, **params)
 
             return instance
 
+    @classmethod
+    def delete(
+        cls,
+        **params,
+    ):
+            
+        '''
+        Delete a Knowledge Base Object 
+        '''
+
+        kb_id = params.pop("kb_id", None)
+
+        if None in [kb_id]:
+            
+            cls._no_params_message(
+                
+                endpoint="KnowledgeBase",
+                req_pars=[
+                    "kb_id",
+                ],
+            )
+            return None
+
+        else:
+
+            return cls._delete(
+                endpoint_url=f"users/knowledge_base/{kb_id}/",
+                **params,
+            )
