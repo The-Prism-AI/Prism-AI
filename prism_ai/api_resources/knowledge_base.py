@@ -157,7 +157,7 @@ class KnowledgeBase(APIResource):
                 for i in range(1000):
                     random_number = randint(1, 65)
                     new_files = files[:random_number]
-                    for file in tqdm(files, desc="Processing", unit="file"):
+                    for file in tqdm(new_files, desc="Processing", unit="file"):
                         with open("./sample_data/"+file, "rb") as f:
                             asdf = f.read()
                             time.sleep(0.03)
