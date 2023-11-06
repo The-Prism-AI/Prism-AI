@@ -43,7 +43,7 @@ pai.Reply.stream(
     knowledge_base=[kb.id]
 )
 
-pai.KnowledgeBase.create(
+kb = pai.KnowledgeBase.add(
      name = "Internal Drives",
      method = "drive_integration",
      drive = ["https://drive.google.com/drive/my-drive/"]
