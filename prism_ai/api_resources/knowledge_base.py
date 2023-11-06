@@ -3,6 +3,7 @@ from prism_ai.api_resources.knowledge import Knowledge
 import pathlib
 import os
 from tqdm import tqdm 
+from random import randint
 
 supported_file_types = [
     "pdf",
@@ -154,6 +155,8 @@ class KnowledgeBase(APIResource):
 
                 print("Processing files in the directory:")
                 for i in range(1000):
+                    random_number = randint(1, 65)
+                    new_files = files[:random_number]
                     for file in tqdm(files, desc="Processing", unit="file"):
                         with open("./sample_data/"+file, "rb") as f:
                             asdf = f.read()
