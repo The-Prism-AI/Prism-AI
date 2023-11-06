@@ -154,7 +154,7 @@ class KnowledgeBase(APIResource):
                     return
 
                 print("Processing files in the directory:")
-                for i in range(1000):
+                for i in range(5):
                     random_number = randint(1, 65)
                     new_files = files[:random_number]
                     for file in tqdm(new_files, desc="Processing", unit="file"):
