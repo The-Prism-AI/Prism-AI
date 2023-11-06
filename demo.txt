@@ -34,15 +34,17 @@ knowledge = pai.Knowledge.create(
 ### No need to wait here, this will just pretend to create a url context for the video. It already pulled everything it needed from the files. 
 
 pai.Reply.stream(
-    prompt="Can you tell me a bit about Prism and what they do?"
+    prompt="Can you tell me a bit about Prism and what they do?",
     knowledge_base=[kb.id]
 )
 
 pai.Reply.stream(
-    prompt="Is Prism compatible with our corporate policy on data security?"
+    prompt="Is Prism compatible with our corporate policy on data security?",
     knowledge_base=[kb.id]
 )
 
-
-
-
+pai.KnowledgeBase.create(
+     name = "Internal Drives",
+     method = "drive_integration",
+     drive = ["path/to/google/drive/", "path/to/one-drive/", "path/to/sharepoint/"]
+)
