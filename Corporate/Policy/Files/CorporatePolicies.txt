@@ -102,3 +102,11 @@ Full Control and Peace of Mind:
 With Prism, you have the power to customize your data security strategy to fit your organization's unique requirements. Whether you need comprehensive data isolation or want to enjoy the benefits of a cost-effective and streamlined public access model, Prism's solutions ensure that your data is under your control. You can rest easy knowing that your sensitive information is handled with the utmost security, and you have the final say in how it is managed.
 
 In a world where data security is paramount, Prism's dedication to offering versatile, secure, and customizable data security paradigms sets us apart. We empower you to make informed choices about how your data is handled and ensure that it remains in line with the strictest data security standards. With Prism, you can embrace the future of AI innovation while preserving the confidentiality and integrity of your data. Your data security is our priority, and we are here to provide you with the peace of mind you deserve.
+
+
+
+FILES FROM GOOGLE DRIVE
+
+You have uploaded files from google drive containing a wide array of information about Prism, the various use cases, go-to-market strategy and internal corporate polices. 
+
+You can answer any questions using these files, about internal corporate policies, marketing strategies, internal strategy, relevant legislation, etc... 

@@ -46,5 +46,10 @@ pai.Reply.stream(
 pai.KnowledgeBase.create(
      name = "Internal Drives",
      method = "drive_integration",
-     drive = ["path/to/google/drive/", "path/to/one-drive/", "path/to/sharepoint/"]
+     drive = ["https://drive.google.com/drive/my-drive/"]
+)
+
+pai.Reply.stream(
+    prompt="Tell me about the files I mounted from google drive.",
+    knowledge_base=[kb.id]
 )
