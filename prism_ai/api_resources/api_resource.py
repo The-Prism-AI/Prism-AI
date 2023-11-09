@@ -38,6 +38,7 @@ class APIResource:
     def create_headers(self, kb_id=None, unique_name=None):
 
         headers = {"Authorization":self.api_key}
+
         if None not in [kb_id, unique_name]:
             headers['Content-Type'] = 'application/octet-stream'
             headers['Filename'] = unique_name
@@ -230,7 +231,6 @@ class APIResource:
             "recursion": params.pop("recursion", False),
             "max_recursion": params.pop("max_recursion", 1),
             "only_base_url": params.pop("only_base_url", True),
-            # "prompt": params.pop("prompt", None),
         }
 
         params = {
