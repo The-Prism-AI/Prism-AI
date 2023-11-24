@@ -145,7 +145,7 @@ kb1 = pai.KnowledgeBase.create(
   base_url = "https://www.my-website.com/",
 )
 
-kb2 = pai.KnowledgeBase.cretae(
+kb2 = pai.KnowledgeBase.create(
   name = "Local Information", 
   base_dir = "/path/to/relevant/directory"
 )
@@ -225,7 +225,7 @@ kb = pai.KnowledgeBase.create(
 Create a Knowledge Base from information found on a local filesystem: 
 
 ```py
-kb = pai.KnowledgeBase.cretae(
+kb = pai.KnowledgeBase.create(
   name = "Local Prism Information", 
   base_dir = "/path/to/relevant/directory",
   recursion = True, 
