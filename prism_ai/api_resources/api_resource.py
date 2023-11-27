@@ -1,5 +1,5 @@
 from typing import Any
-import prism_ai as rs
+import prism_ai as pai
 import requests
 import json as jsn
 import httpx
@@ -8,7 +8,7 @@ from typing import Optional, Any
 class APIResource:
 
     '''
-    Parent Class for RenAIssance API Resources 
+    Parent Class for Prism API Resources 
     '''
 
     def __init__(
@@ -20,9 +20,9 @@ class APIResource:
         status: int = 0,
     ):
 
-        self.api_key = rs.api_key
-        self.api_url = rs.api_url
-        self.timeout = rs.timeout
+        self.api_key = pai.api_key
+        self.api_url = pai.api_url
+        self.timeout = pai.timeout
         self.endpoint_url = endpoint_url
         self.response = response
         self.text = text
@@ -35,15 +35,18 @@ class APIResource:
     ):
         print('This is a parent class for API resource attributes. It is not meant to be called directly. Please refer to our documentation for proper usage of the API.')
 
-    def create_headers(self, kb_id=None, unique_name=None):
+    def create_headers(self, kb_id=None, unique_name=None, filepath=None, generate_meta_context=False, kb_meta_context=""):
 
         headers = {"Authorization":self.api_key}
-        if None not in [kb_id, unique_name]:
+        if None not in [kb_id, unique_name, filepath]:
             headers['Content-Type'] = 'application/octet-stream'
-            headers['Filename'] = unique_name
+            headers['Name'] = unique_name
+            headers['Filename'] = filepath
             headers['Connection'] = 'keep-alive'
             headers['Keep-Alive'] = '300'
             headers['kb_id'] = str(kb_id)
+            headers['generate_meta_context'] = str(generate_meta_context)
+            headers['kb_meta_context'] = str(kb_meta_context)
             
         return headers
 
@@ -61,11 +64,10 @@ class APIResource:
             Delete API Resource
             '''
     
-            if rs.api_key == None: 
+            if pai.api_key == None: 
     
-                print("Welcome to Prism! To get started, you\'ll need an API Key. \n\n You can get one for free at https://www.prism-ai.ch/\n\nOnce you've got your API key, you can either:\n\n- Set it as an environment variable called RS_API_KEY\n- Set it as a variable in your python script called rs.api_key\n\nFor example:\n\nimport renaissance as rs\nrs.api_key = \"YOUR_API_KEY\"\n\nIf you need any help, please refer to our documentation at https://www.prism-ai.ch/docs/ \n\nHappy coding!")
-    
-                return
+                print("Welcome to Prism! To get started, you\'ll need an API Key. \n\n You can get one for free at https://www.prism-ai.ch/\n\nOnce you've got your API key, you can either:\n\n- Set it as an environment variable called PRISM_API_KEY\n- Set it as a variable in your python script called pai.api_key\n\nFor example:\n\nimport prism_ai as pai\npai.api_key = \"YOUR_API_KEY\"\n\nIf you need any help, please refer to our documentation at https://www.prism-ai.ch/docs/ \n\nHappy coding!")
+                raise ValueError("API Key is required.")
     
             instance = cls(endpoint_url=endpoint_url)
             json, data, params = instance._prepare_params(**params)
@@ -103,11 +105,10 @@ class APIResource:
         Get API Resource
         '''
 
-        if rs.api_key == None: 
+        if pai.api_key == None: 
 
-            print("Welcome to RenAIssance Studio! To get started, you\'ll need an API Key. \n\n You can get one for free at https://app.renaissancestudio.ai/\n\nOnce you've got your API key, you can either:\n\n- Set it as an environment variable called RS_API_KEY\n- Set it as a variable in your python script called rs.api_key\n\nFor example:\n\nimport renaissance as rs\nrs.api_key = \"YOUR_API_KEY\"\n\nIf you need any help, please refer to our documentation at https://app.renaissancestudio.ai/docs/ \n\nHappy coding!")
-
-            return
+            print("Welcome to Prism! To get started, you\'ll need an API Key. \n\n You can get one for free at https://www.prism-ai.ch/\n\nOnce you've got your API key, you can either:\n\n- Set it as an environment variable called PRISM_API_KEY\n- Set it as a variable in your python script called pai.api_key\n\nFor example:\n\nimport prism_ai as pai\npai.api_key = \"YOUR_API_KEY\"\n\nIf you need any help, please refer to our documentation at https://www.prism-ai.ch/docs/ \n\nHappy coding!")
+            raise ValueError("API Key is required.")
 
         instance = cls(endpoint_url=endpoint_url)
         json, data, params = instance._prepare_params(**params)
@@ -118,9 +119,7 @@ class APIResource:
         else:
             
             if "response_stream" not in endpoint_url:
-                # try:
-                if True:
-                    response = requests.get(
+                response = requests.get(
                         instance.api_url + endpoint_url,
                         headers=instance.create_headers(),
                         params=params,
@@ -129,15 +128,9 @@ class APIResource:
                         timeout=instance.timeout,
                     )
 
-                    instance.json = jsn.loads(response.text)
-                    instance.text = response.text
-                    instance.status = response.status_code
-
-                # except:
-                else:
-                    raise ValueError("There was an error with your request. Please check your parameters and try again.")
-
-                
+                instance.json = jsn.loads(response.text)
+                instance.text = response.text
+                instance.status = response.status_code
 
                 for key, value in instance.json.items():
                     setattr(instance, key, value)
@@ -155,18 +148,14 @@ class APIResource:
         Post API Resource
         '''
 
-        if rs.api_key == None: 
+        if pai.api_key == None: 
 
-            print("Welcome to RenAIssance Studio! To get started, you\'ll need an API Key. \n\n You can get one for free at https://app.renaissancestudio.ai/\n\nOnce you've got your API key, you can either:\n\n- Set it as an environment variable called RS_API_KEY\n- Set it as a variable in your python script called rs.api_key\n\nFor example:\n\nimport renaissance as rs\nrs.api_key = \"YOUR_API_KEY\"\n\nIf you need any help, please refer to our documentation at https://app.renaissancestudio.ai/docs/ \n\nHappy coding!")
-
-            return
-
-
+            print("Welcome to Prism! To get started, you\'ll need an API Key. \n\n You can get one for free at https://app.prism-ai.ch/\n\nOnce you've got your API key, you can either:\n\n- Set it as an environment variable called PRISM_API_KEY\n- Set it as a variable in your python script called pai.api_key\n\nFor example:\n\nimport prism_ai as pai\npai.api_key = \"YOUR_API_KEY\"\n\nIf you need any help, please refer to our documentation at https://app.prism-ai.ch/docs/ \n\nHappy coding!")
+            
+            raise ValueError("API Key is required.")
+            
         instance = cls(endpoint_url=endpoint_url)
         json, data, params = instance._prepare_params(**params)
-
-        print(data)
-        print(json)
 
         if instance.endpoint_url is None:
             raise ValueError("Endpoint URL is required.")
@@ -179,11 +168,11 @@ class APIResource:
                 json=json,
                 timeout=instance.timeout,
             )
-            # print(response.text)
+
             instance.json = jsn.loads(response.text)
             instance.text = response.text
             instance.status = response.status_code
-            # print(instance.json)
+
             for key, value in instance.json.items():
                 setattr(instance, key, value)
         
@@ -201,11 +190,10 @@ class APIResource:
         Get streaming response from API Resource (outputs an object of type generator)
         '''
 
-        if rs.api_key == None: 
+        if pai.api_key == None: 
 
-            print("Welcome to RenAIssance Studio! To get started, you\'ll need an API Key. \n\n You can get one for free at https://app.renaissancestudio.ai/\n\nOnce you've got your API key, you can either:\n\n- Set it as an environment variable called RS_API_KEY\n- Set it as a variable in your python script called rs.api_key\n\nFor example:\n\nimport renaissance as rs\nrs.api_key = \"YOUR_API_KEY\"\n\nIf you need any help, please refer to our documentation at https://app.renaissancestudio.ai/docs/ \n\nHappy coding!")
-
-            return
+            print("Welcome to Prism! To get started, you\'ll need an API Key. \n\n You can get one for free at https://www.prism-ai.ch/\n\nOnce you've got your API key, you can either:\n\n- Set it as an environment variable called PRISM_API_KEY\n- Set it as a variable in your python script called pai.api_key\n\nFor example:\n\nimport prism_ai as pai\npai.api_key = \"YOUR_API_KEY\"\n\nIf you need any help, please refer to our documentation at https://www.prism-ai.ch/docs/ \n\nHappy coding!")
+            raise ValueError("API Key is required.")
 
         instance = cls(endpoint_url=endpoint_url)
         json, data, params = instance._prepare_params(**params)
@@ -241,17 +229,10 @@ class APIResource:
             instance.status = 500
             instance.text = "There\'s been an error on our side. Sorry about that! Our engineers are already contacted and working on a fix. Please try again later."
 
-    @classmethod
-    def _no_params_message(
-        cls,
-        endpoint: str,
-        req_pars: list
-    ):
+        except httpx.ConnectTimeout as e:
 
-        msg = f"You\'ve hit the {endpoint} endpoint, without any parameters.\n\nThe required parameters for this endpoint are:\n- " + "\n- ".join([req_par for req_par in req_pars]) + "\n\nPlease refer to our documentation for a comprehensive list of parameters, and proper usage of the API."
-            
-        print(msg)
-        return None
+            instance.status = 500
+            instance.text = "There\'s been an error on our side. Sorry about that! Our engineers are already contacted and working on a fix. Please try again later."
 
     @classmethod
     def _prepare_params(
@@ -267,7 +248,6 @@ class APIResource:
             "s3_bucket": params.pop("s3_bucket", None),
             "user_prompt": params.pop("user_prompt", None),
             "knowledge_base": "+".join([str(elt) for elt in params.pop("kb_ids", "")]),
-            "url": params.pop("base_url", None),
             "text": params.pop("text", None),
             "recursion": params.pop("recursion", False),
             "max_recursion": params.pop("max_recursion", 1),
@@ -281,6 +261,12 @@ class APIResource:
             "hyde": params.pop("hyde", False),
             # "prompt": params.pop("prompt", None),
         }
+        if "base_url" in params.keys():
+            json["url"] = params.pop("base_url", None)
+        elif "url" in params.keys():
+            json["url"] = params.pop("url", None)
+        else:
+            pass
 
         params = {
             "kb_id": params.pop("kb_id", None),

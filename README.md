@@ -15,7 +15,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/Renaissance-Studio/Prism-AI">
+  <a href="https://github.com/The-Prism-AI/Prism-AI">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
@@ -24,14 +24,14 @@
   <p align="center">
     project_description
     <br />
-    <a href="https://github.com/Renaissance-Studio/Prism-AI"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/The-Prism-AI/Prism-AI"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/Renaissance-Studio/Prism-AI">View Demo</a>
+    <a href="https://github.com/The-Prism-AI/Prism-AI">View Demo</a>
     ·
-    <a href="https://github.com/Renaissance-Studio/Prism-AI/issues">Report Bug</a>
+    <a href="https://github.com/The-Prism-AI/Prism-AI/issues">Report Bug</a>
     ·
-    <a href="https://github.com/Renaissance-Studio/Prism-AI/issues">Request Feature</a>
+    <a href="https://github.com/The-Prism-AI/Prism-AI/issues">Request Feature</a>
   </p>
 </div>
 
@@ -145,7 +145,7 @@ kb1 = pai.KnowledgeBase.create(
   base_url = "https://www.my-website.com/",
 )
 
-kb2 = pai.KnowledgeBase.cretae(
+kb2 = pai.KnowledgeBase.create(
   name = "Local Information", 
   base_dir = "/path/to/relevant/directory"
 )
@@ -225,7 +225,7 @@ kb = pai.KnowledgeBase.create(
 Create a Knowledge Base from information found on a local filesystem: 
 
 ```py
-kb = pai.KnowledgeBase.cretae(
+kb = pai.KnowledgeBase.create(
   name = "Local Prism Information", 
   base_dir = "/path/to/relevant/directory",
   recursion = True, 
@@ -563,7 +563,7 @@ context = pai.Context.get(
 - [ ] Feature 3
     - [ ] Nested Feature
 
-See the [open issues](https://github.com/Renaissance-Studio/Prism-AI/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/The-Prism-AI/Prism-AI/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -600,7 +600,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 Prism AI - info@prism-ai.ch
 <!-- [@twitter_handle](https://twitter.com/twitter_handle)-->
 
-Project Link: [https://github.com/Renaissance-Studio/Prism-AI](https://github.com/Renaissance-Studio/Prism-AI)
+Project Link: [https://github.com/The-Prism-AI/Prism-AI](https://github.com/The-Prism-AI/Prism-AI)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -620,15 +620,15 @@ Project Link: [https://github.com/Renaissance-Studio/Prism-AI](https://github.co
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
-[contributors-url]: https://github.com/Renaissance-Studio/Prism-AI/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/Renaissance-Studio/Prism-AI.svg?style=for-the-badge
-[forks-url]: https://github.com/Renaissance-Studio/Prism-AI/network/members
-[stars-shield]: https://img.shields.io/github/stars/Renaissance-Studio/Prism-AI.svg?style=for-the-badge
-[stars-url]: https://github.com/Renaissance-Studio/Prism-AI/stargazers
-[issues-shield]: https://img.shields.io/github/issues/Renaissance-Studio/Prism-AI.svg?style=for-the-badge
-[issues-url]: https://github.com/Renaissance-Studio/Prism-AI/issues
-[license-shield]: https://img.shields.io/github/license/Renaissance-Studio/Prism-AI.svg?style=for-the-badge
-[license-url]: https://github.com/Renaissance-Studio/Prism-AI/blob/master/LICENSE.txt
+[contributors-url]: https://github.com/The-Prism-AI/Prism-AI/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/The-Prism-AI/Prism-AI.svg?style=for-the-badge
+[forks-url]: https://github.com/The-Prism-AI/Prism-AI/network/members
+[stars-shield]: https://img.shields.io/github/stars/The-Prism-AI/Prism-AI.svg?style=for-the-badge
+[stars-url]: https://github.com/The-Prism-AI/Prism-AI/stargazers
+[issues-shield]: https://img.shields.io/github/issues/The-Prism-AI/Prism-AI.svg?style=for-the-badge
+[issues-url]: https://github.com/The-Prism-AI/Prism-AI/issues
+[license-shield]: https://img.shields.io/github/license/The-Prism-AI/Prism-AI.svg?style=for-the-badge
+[license-url]: https://github.com/The-Prism-AI/Prism-AI/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
 [product-screenshot]: images/screenshot.png

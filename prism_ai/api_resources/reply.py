@@ -11,6 +11,7 @@ class Reply(APIResource):
     @classmethod
     def create(
         cls,
+        prompt: str,
         **params,
     ):
             
@@ -18,21 +19,7 @@ class Reply(APIResource):
         Create a new Reply
         '''
 
-        prompt = params.pop("prompt", None)
-
-        if prompt == None:
-            
-            cls._no_params_message(
-                
-                endpoint="reply",
-                req_pars=[
-                    "prompt"
-                ],
-            )
-            return None
-        
-        else: 
-            return cls._post(
+        return cls._post(
                 endpoint_url="response/",
                 user_prompt=prompt,
                 **params,
@@ -41,24 +28,11 @@ class Reply(APIResource):
     @classmethod
     def stream(
         cls,
+        prompt: str,
         **params,
     ):
-        
-        prompt = params.pop("prompt", None)
 
-        if prompt == None:
-            
-            cls._no_params_message(
-                
-                endpoint="reply",
-                req_pars=[
-                    "prompt"
-                ],
-            )
-            return None
-        
-        else: 
-            return cls._stream(
+        return cls._stream(
                 endpoint_url="response_stream/",
                 user_prompt=prompt,
                 **params,

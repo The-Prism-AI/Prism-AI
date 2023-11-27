@@ -17,11 +17,6 @@ supported_file_types = [
     "gz"
 ]
 
-# async def async_post(url, data, headers):
-#     async with httpx.AsyncClient() as client:
-#         response = await client.post(url, data=data, headers=headers)
-#     return response
-
 class Knowledge(APIResource):
 
     '''
@@ -31,17 +26,16 @@ class Knowledge(APIResource):
     @classmethod
     def create(
         cls,
+        method: str,
+        name: str, 
+        kb_id: int,
+        source: str,
         **params,
     ):
             
         '''
         Create a new Knowledge Object from a url
         '''
-
-        method = params.pop("method", None)
-        name = params.pop("name", None)
-        kb_id = params.pop("kb_id", None)
-        source = params.pop("source", None)
 
         class FileWithProgress:
             def __init__(self, file, total_size, chunk_size=1024*1024):
@@ -61,19 +55,6 @@ class Knowledge(APIResource):
                 progress_bar.update(len(data))
                 return data
 
-        if None in [name, kb_id, source]:
-                
-            cls._no_params_message(
-                
-                endpoint="Knowledge",
-                req_pars=[
-                    "name",
-                    "kb_id",
-                    "source",
-                ],
-            )
-            return None
-        
         if method == "text":
             return cls._post(
                 endpoint_url=f"users/knowledge_base/{kb_id}/knowledge_from_text/",
@@ -97,11 +78,11 @@ class Knowledge(APIResource):
             except: 
                 raise ValueError("The path you provided is not valid.")
 
-            if dir_path.is_dir(): # We're dealing with a directory.
+            if dir_path.is_dir():
 
                 print("You've provided a directory, to the Knowledge.create method.\n\nPlease use the KnowledgeBase.create method to create a KnowledgeBase from a directory, to create multiple knowledge objects from a directory.")
 
-            else: # We're dealing with a file. 
+            elif dir_path.is_file():
 
                 instance = cls(endpoint_url="upload/")
                 file_size = os.path.getsize(source)
@@ -115,7 +96,7 @@ class Knowledge(APIResource):
                 else: 
                     pass
                 if user_info["tokens_remaining"] <= 0:
-                    raise ValueError("You have no tokens remaining. Please upgrade your plan to continue using prism.")
+                    raise ValueError("You have no tokens remaining. Please upgrade your plan at https://app.prism-ai.ch/ to continue using prism.")
                 if file_size > 4 * 1024 * 1024 * 1024:
                     raise ValueError("The file you provided is too large. The maximum file size is 4GB.")
                 if str(source).split(".")[-1] not in supported_file_types:
@@ -123,29 +104,23 @@ class Knowledge(APIResource):
 
                 with open(source, 'rb') as file:
                     
-                    unique_name = "kb_"+str(kb_id)+"/"+name
+                    unique_name = name
+                    filename = "kb_"+str(kb_id)+"/"+str(dir_path.name)
                     print("Uploading file "+str(source)+" as "+str(name)+" ...")
 
                     file_like = FileWithProgress(file, file_size)
+                    generate_meta_context = params.pop("generate_meta_context", False)
+                    kb_meta_context = params.pop("kb_meta_context", "")
 
-                    headers = instance.create_headers(kb_id=kb_id, unique_name=unique_name)
+                    headers = instance.create_headers(kb_id=kb_id, unique_name=unique_name, filepath=filename, generate_meta_context=generate_meta_context, kb_meta_context=kb_meta_context)
                     url = instance.api_url + "upload/"
 
                     with requests.Session() as session: 
                         with tqdm(total=file_size, unit='B', unit_scale=True, dynamic_ncols=True) as progress_bar:
                             response = session.post(url, data=file_like, headers=headers)
-                        # k_id = response.json()["id"]
                     
                     return response
-                    # return cls._get(
-                    #     endpoint_url=f"knowledge/{k_id}/",
-                    # )
-                    # return cls._post(
-                    #     endpoint_url=f"users/knowledge_base/{kb_id}/knowledge_from_file/",
-                    #     name=name,
-                    #     s3_bucket=unique_name,
-                    #     **params
-                    # )
-
-                return {}
-
+            else:
+                raise ValueError("The path you provided is not valid.")
+        else: 
+            raise ValueError("The method you provided is not valid. Please use one of the following methods: \n\n - text \n - url \n - file")
