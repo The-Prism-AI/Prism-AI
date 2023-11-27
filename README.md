@@ -505,15 +505,6 @@ context = pai.Context.get(
 
 ```
 
-## Roadmap
-
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
-
-See the [open issues](https://github.com/The-Prism-AI/Prism-AI/issues) for a full list of proposed features (and known issues).
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
@@ -550,17 +541,6 @@ Prism AI - info@prism-ai.ch
 <!-- [@twitter_handle](https://twitter.com/twitter_handle)-->
 
 Project Link: [https://github.com/The-Prism-AI/Prism-AI](https://github.com/The-Prism-AI/Prism-AI)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-* []()
-* []()
-* []()
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
