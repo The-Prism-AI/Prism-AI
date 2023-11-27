@@ -145,6 +145,7 @@ class KnowledgeBase(APIResource):
                 name=name,
                 **params,
             )
+        print(instance.json)
             
         if "base_dir" in params or "base_url" in params:
             instance.add(kb_id=instance.json['id'], **params)
@@ -161,7 +162,7 @@ class KnowledgeBase(APIResource):
         '''
         Delete a Knowledge Base Object 
         '''
-        
+
         return cls._delete(
                 endpoint_url=f"users/knowledge_base/{kb_id}/",
                 **params,
