@@ -460,7 +460,7 @@ Create a reply using some knowledge base:
 
 stream = pai.Reply.stream(
   prompt = "Tell me something Interesting that about prism-ai.",
-  knowledge_base = [1],
+  kb_ids = [1],
   hyde = True
 )
 
